@@ -1,0 +1,31 @@
+OBJ=name.grammar.obj \
+name.lex.obj \
+non_terminal_node.obj \
+terminal_node.obj \
+parser_tree.obj \
+Compiler.obj \
+CompilerContext.obj \
+compiling_time_exception.obj \
+dllmain.obj \
+main.obj
+
+rebuild: clean all
+
+all: $(OBJ)	
+	$(CC) /nologo /LDd /Fe../bin/name_compiler.dll $(OBJ)
+	$(CC) /nologo /Fe:../bin/name_compiler_app.exe ../bin/name_compiler.lib main.obj
+
+name.grammar.cc: name.grammar.yy
+	bison -v -o name.grammar.cc name.grammar.yy	
+
+name.lex.cc: name.grammar.hh name.lex.ll	
+	flex --wincompat -o name.lex.cc name.lex.ll		
+	
+.cc.obj:   
+	$(CC) /nologo /EHsc /I ../FlexLexer /c $*.cc /Fo$@    
+	
+.cpp.obj:   
+	$(CC) /nologo /EHsc /I ../FlexLexer /c $*.cpp /Fo$@   
+	
+clean:
+	del *.cc *.hh *.obj *.exe *.lib *.dll *.exp *.output
